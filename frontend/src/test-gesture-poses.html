@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gesture Pose Test</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1a1a2e; color: #fff; }
+    .gesture-test { margin: 10px 0; padding: 10px; background: #16213e; border-left: 3px solid #0f3460; }
+    .gesture-test h3 { margin: 0 0 5px 0; color: #00d4ff; }
+    .gesture-test p { margin: 3px 0; }
+  </style>
+</head>
+<body>
+  <h1>✋ Gesture-to-Pose Mapping Test</h1>
+  <p>These pose values are mapped in Avatar3D.jsx and should be applied when gestures are detected:</p>
+  
+  <div class="gesture-test">
+    <h3>A - Fist</h3>
+    <p>leftZ: -0.45, rightZ: 0.45, leftX: 0.1, rightX: 0.1, handScale: 0.95</p>
+  </div>
+
+  <div class="gesture-test">
+    <h3>S - Closed Hand</h3>
+    <p>leftZ: -0.5, rightZ: 0.5, leftX: 0.2, rightX: 0.2, handScale: 0.9</p>
+  </div>
+
+  <div class="gesture-test">
+    <h3>U - Peace Sign</h3>
+    <p>leftZ: -0.2, rightZ: 0.2, leftX: -0.05, rightX: -0.05, handScale: 1.02</p>
+  </div>
+
+  <div class="gesture-test">
+    <h3>V - Victory</h3>
+    <p>leftZ: -0.15, rightZ: 0.15, leftX: -0.15, rightX: -0.15, handScale: 1.08</p>
+  </div>
+
+  <div class="gesture-test">
+    <h3>1 - One Finger</h3>
+    <p>leftZ: -0.05, rightZ: 0.35, leftX: -0.1, rightX: -0.35, handScale: 1.08</p>
+  </div>
+
+  <div class="gesture-test">
+    <h3>2 - Two Fingers</h3>
+    <p>leftZ: -0.1, rightZ: 0.25, leftX: -0.05, rightX: -0.2, handScale: 1.1</p>
+  </div>
+
+  <div class="gesture-test">
+    <h3>3 - Three Fingers</h3>
+    <p>leftZ: -0.15, rightZ: 0.15, leftX: -0.05, rightX: -0.1, handScale: 1.12</p>
+  </div>
+
+  <div class="gesture-test">
+    <h3>4 - Four Fingers</h3>
+    <p>leftZ: -0.1, rightZ: 0.1, leftX: -0.2, rightX: -0.2, handScale: 1.15</p>
+  </div>
+
+  <div class="gesture-test">
+    <h3>5 - All Five Fingers</h3>
+    <p>leftZ: 0, rightZ: 0, leftX: -0.25, rightX: -0.25, handScale: 1.2</p>
+  </div>
+
+  <hr style="margin: 30px 0; border-color: #0f3460;">
+
+  <h2>Integration Status:</h2>
+  <ul>
+    <li>✅ Avatar3D component accepts `gesture` prop</li>
+    <li>✅ Gesture pose mapping defined for A, S, U, V, 1-5</li>
+    <li>✅ Smooth lerp interpolation applied for arm rotations and hand scaling</li>
+    <li>✅ Mouth animation responds to gesture presence</li>
+    <li>✅ AvatarView component passes gesture from Home.jsx</li>
+    <li>✅ Home.jsx passes detected gesture from CameraFeed to AvatarView</li>
+    <li>✅ Gesture timeout auto-clears after 2 seconds of inactivity</li>
+  </ul>
+
+  <h2>Next Steps to Test:</h2>
+  <ol>
+    <li>Allow camera access on /app page</li>
+    <li>Make an ASL gesture (A, S, U, V, or 1-5)</li>
+    <li>Watch the 3D avatar on the right respond with the corresponding pose</li>
+    <li>Verify smooth arm transitions and hand size scaling</li>
+    <li>See gesture badge appear above avatar showing detected gesture</li>
+  </ol>
+</body>
+</html>
