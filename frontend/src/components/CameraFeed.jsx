@@ -48,58 +48,104 @@ export default function CameraFeed({ onGesture, onEmotion }) {
     const fingers = getFingerState(landmarks, handednessLabel)
     const extendedCount = countExtendedFingers(landmarks, handednessLabel)
     
-    // Distance helpers for specific signs
+    // DISTANCE HELPERS
     const thumbIndexDist = distance(landmarks[4], landmarks[8])
     const thumbMiddleDist = distance(landmarks[4], landmarks[12])
     const thumbRingDist = distance(landmarks[4], landmarks[16])
     const thumbPinkyDist = distance(landmarks[4], landmarks[20])
+    const indexMiddleDist = distance(landmarks[8], landmarks[12])
 
-    // NUMBERS 1-5 (Simple extension)
+    // NUMBERS 0-9
+    // 0: All tips touching (forming O)
+    if (thumbIndexDist < 0.05 && thumbMiddleDist < 0.05 && thumbRingDist < 0.05 && thumbPinkyDist < 0.05) return '0'
     if (extendedCount === 1 && fingers.index && !fingers.thumb) return '1'
-    if (extendedCount === 2 && fingers.index && fingers.middle && !fingers.thumb) return '2'
+    if (extendedCount === 2 && fingers.index && fingers.middle && !fingers.thumb && indexMiddleDist > 0.05) return '2'
     if (extendedCount === 3 && fingers.index && fingers.middle && fingers.ring && !fingers.thumb) return '3'
     if (extendedCount === 4 && fingers.index && fingers.middle && fingers.ring && fingers.pinky && !fingers.thumb) return '4'
     if (extendedCount === 5) return '5'
-
-    // NUMBERS 6-10
+    
+    // 6-9 (Specific finger touching thumb)
     if (thumbPinkyDist < 0.05 && fingers.index && fingers.middle && fingers.ring) return '6'
     if (thumbRingDist < 0.05 && fingers.index && fingers.middle && fingers.pinky) return '7'
     if (thumbMiddleDist < 0.05 && fingers.index && fingers.ring && fingers.pinky) return '8'
     if (thumbIndexDist < 0.05 && fingers.middle && fingers.ring && fingers.pinky) return '9'
-    if (fingers.thumb && !fingers.index && !fingers.middle && !fingers.ring && !fingers.pinky) return '10'
 
-    // ALPHABETS
-    // A: Thumb out, others folded
-    if (fingers.thumb && !fingers.index && !fingers.middle && !fingers.ring && !fingers.pinky) return 'A'
+    // ALPHABETS A-Z
+    // A: Fist with thumb on side
+    if (!fingers.index && !fingers.middle && !fingers.ring && !fingers.pinky && fingers.thumb) return 'A'
     
-    // B: All fingers up, thumb tucked
+    // B: Open hand, thumb tucked
     if (fingers.index && fingers.middle && fingers.ring && fingers.pinky && !fingers.thumb) return 'B'
     
-    // C: Curved hand (Checking if tips are relatively close but not touching, forming a loop)
-    const cShapeDist = distance(landmarks[4], landmarks[8])
-    if (cShapeDist > 0.1 && cShapeDist < 0.2 && !fingers.index && !fingers.middle) return 'C'
-
-    // D: Index up, others touching thumb
+    // C: Curved shape
+    if (thumbIndexDist > 0.1 && thumbIndexDist < 0.2 && !fingers.index && !fingers.middle) return 'C'
+    
+    // D: Index up, others curled
     if (fingers.index && thumbMiddleDist < 0.05 && !fingers.middle && !fingers.ring && !fingers.pinky) return 'D'
 
-    // L: Thumb and Index out
-    if (fingers.thumb && fingers.index && !fingers.middle && !fingers.ring && !fingers.pinky) return 'L'
+    // E: All fingers curled, tips touching thumb tip area
+    if (!fingers.index && !fingers.middle && !fingers.ring && !fingers.pinky && !fingers.thumb && 
+        landmarks[8].y > landmarks[6].y && landmarks[4].y < landmarks[8].y) return 'E'
 
-    // W: Index, Middle, Ring out
-    if (fingers.index && fingers.middle && fingers.ring && !fingers.thumb && !fingers.pinky) return 'W'
+    // F: Thumb and Index touching, others up
+    if (thumbIndexDist < 0.05 && fingers.middle && fingers.ring && fingers.pinky) return 'F'
 
-    // Y: Thumb and Pinky out
-    if (fingers.thumb && fingers.pinky && !fingers.index && !fingers.middle && !fingers.ring) return 'Y'
+    // G: Index and Thumb pointing sideways (horizontal)
+    if (Math.abs(landmarks[8].y - landmarks[4].y) < 0.1 && !fingers.middle && !fingers.ring) return 'G'
 
-    // V & U (Distance based)
-    if (fingers.index && fingers.middle && !fingers.ring && !fingers.pinky && !fingers.thumb) {
-      const indexMiddleDist = distance(landmarks[8], landmarks[12])
-      if (indexMiddleDist > 0.1) return 'V'
-      return 'U'
+    // H: Index and Middle pointing sideways
+    if (Math.abs(landmarks[8].y - landmarks[12].y) < 0.05 && !fingers.ring && !fingers.pinky) return 'H'
+
+    // I: Pinky up only
+    if (fingers.pinky && !fingers.index && !fingers.middle && !fingers.ring) return 'I'
+
+    // K: Index and Middle up, Thumb touching Middle
+    if (fingers.index && fingers.middle && thumbMiddleDist < 0.05 && !fingers.ring) return 'K'
+
+    // L: Thumb and Index up
+    if (fingers.thumb && fingers.index && !fingers.middle && !fingers.ring) return 'L'
+
+    // M: Thumb under 3 fingers (Logic simplified: 3 fingers down over thumb)
+    if (!fingers.index && !fingers.middle && !fingers.ring && landmarks[4].x > landmarks[14].x) return 'M'
+
+    // O: Circle with all fingers
+    if (thumbIndexDist < 0.05 && thumbMiddleDist < 0.05) return 'O'
+
+    // R: Index and Middle crossed
+    if (fingers.index && fingers.middle && landmarks[8].x > landmarks[12].x) return 'R'
+
+    // S: Fist (thumb over fingers)
+    if (!fingers.index && !fingers.middle && !fingers.ring && !fingers.pinky && !fingers.thumb) return 'S'
+
+    // V & U
+    if (fingers.index && fingers.middle && !fingers.ring && !fingers.pinky) {
+      return (indexMiddleDist > 0.07) ? 'V' : 'U'
     }
 
-    // S: Fist
-    if (!fingers.index && !fingers.middle && !fingers.ring && !fingers.pinky && !fingers.thumb) return 'S'
+    // W: Index, Middle, Ring up
+    if (fingers.index && fingers.middle && fingers.ring && !fingers.pinky) return 'W'
+
+    // X: Index hooked
+    if (landmarks[8].y > landmarks[7].y && !fingers.middle && !fingers.ring) return 'X'
+
+    // Y: Thumb and Pinky up
+    if (fingers.thumb && fingers.pinky && !fingers.index && !fingers.middle) return 'Y'
+
+    // CONTROL GESTURES
+    // Confirm (Thumbs up)
+    if (fingers.thumb && !fingers.index && !fingers.middle && !fingers.ring && !fingers.pinky && landmarks[4].y < landmarks[3].y) return 'CONFIRM'
+    
+    // Cancel (Thumbs down)
+    if (fingers.thumb && !fingers.index && !fingers.middle && !fingers.ring && !fingers.pinky && landmarks[4].y > landmarks[3].y) return 'CANCEL'
+
+    // I Love You
+    if (fingers.thumb && fingers.index && fingers.pinky && !fingers.middle && !fingers.ring) return 'I LOVE YOU'
+
+    // YOU (Pointing Index out/forward)
+    if (fingers.index && !fingers.thumb && !fingers.middle && !fingers.ring && !fingers.pinky && landmarks[8].y < landmarks[5].y) return 'YOU'
+
+    // NO (Index and Middle tapping Thumb)
+    if (thumbIndexDist < 0.06 && thumbMiddleDist < 0.06 && !fingers.ring && !fingers.pinky) return 'NO'
 
     return null
   }
@@ -249,14 +295,14 @@ export default function CameraFeed({ onGesture, onEmotion }) {
             ) : (
               <>
                 <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-                Camera Active
+                Interpreter Ready
               </>
             )}
           </div>
 
           {/* Hand zone indicator */}
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 glass px-3 py-1 rounded-full text-xs text-white/50">
-            ✋ Show ASL gestures (A-Z, 1-10)
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 glass px-3 py-1 rounded-full text-[10px] text-white/50 font-bold uppercase tracking-widest">
+            ✋ A-Z, 0-9, Core Words
           </div>
         </>
       )}

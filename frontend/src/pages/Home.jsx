@@ -202,38 +202,71 @@ function getAIReply(input) {
     return 'I see your hand! Try making a clearer sign like A, B, or 1-5.'
   }
 
+  // ALPHABET RESPONSES
   const alphabetResponses = {
-    'A': "Letter A! 👊 Nice job.",
-    'B': "That's B! 🖐️ Good form.",
-    'C': "C recognized! ✊",
-    'L': "L is correct! 👍",
-    'W': "W detected! 🖐️",
-    'Y': "Y is perfect! 🤟",
-    'S': "Letter S! ✊",
-    'V': "V for Victory! ✌️",
-    'U': "U recognized! ✌️"
+    'A': "Letter A! 👊 Good start.",
+    'B': "That's B! 🖐️ Nice and flat.",
+    'C': "C recognized! ✊ Perfect curve.",
+    'D': "D is correct! ☝️ Pointing up.",
+    'E': "Letter E! ✊ Tucked in tight.",
+    'F': "F detected! 🆗 Nice loop.",
+    'G': "G identified! 👈 Sideways thumb.",
+    'H': "Letter H! ✌️ Both fingers flat.",
+    'I': "I see that I! 🤙 Just the pinky.",
+    'J': "J recognized! (Remember the hook motion!)",
+    'K': "K detected! ✌️ Middle finger touch.",
+    'L': "L is perfect! 👍 That's an easy one.",
+    'M': "M identified! 👊 Three fingers over.",
+    'N': "N recognized! 👊 Two fingers over.",
+    'O': "O shape! 🆗 Perfect circle.",
+    'P': "P identified! 🤌 Like a downward K.",
+    'Q': "Q detected! 🤏 Pointing down.",
+    'R': "R is correct! 🤞 Fingers crossed.",
+    'S': "Letter S! ✊ Tight fist.",
+    'T': "T recognized! 👊 Thumb tucked.",
+    'U': "U identified! ✌️ Fingers together.",
+    'V': "V for Victory! ✌️ Fingers apart.",
+    'W': "W detected! 🖐️ Three fingers up.",
+    'X': "X recognized! ☝️ Hooked index.",
+    'Y': "Y is perfect! 🤙 Thumb and pinky.",
+    'Z': "Z recognized! (Try drawing it in the air!)"
   }
 
   if (sign.match(/^[A-Z]$/)) {
-    return alphabetResponses[sign] || `Recognized ${sign}! Keep practicing! 🌟`
+    return alphabetResponses[sign] || `Recognized ${sign}! Great work! 🌟`
   }
 
+  // NUMBER RESPONSES
   const numberResponses = {
+    '0': "Number 0! 🆗 A perfect circle.",
     '1': "Number 1! ☝️",
     '2': "Number 2! ✌️",
-    '5': "Number 5! ✋",
-    '6': "6 detected! (Thumb + Pinky)",
-    '10': "10! Great gesture."
+    '3': "Number 3! 🤟 Thumb out.",
+    '4': "Number 4! ✋ Four fingers up.",
+    '5': "Number 5! ✋ Full hand.",
+    '6': "6 detected! 🤙 Pinky to thumb.",
+    '7': "7 recognized! 🖖 Ring to thumb.",
+    '8': "8 identified! 👌 Middle to thumb.",
+    '9': "9 detected! 🆗 Index to thumb.",
+    '10': "10! 🤙 A great thumbs up/shake."
   }
 
   if (input.match(/^[0-9]+$/)) {
     return numberResponses[input] || `Number ${input} detected! 👍`
   }
 
-  if (rawInput.includes('hello') || rawInput.includes('hi')) return '👋 Hi there! I am Stacy, your sign language tutor.'
-  if (rawInput.includes('thank')) return '😊 No problem! Happy to help!'
-  if (rawInput.includes('name')) return '🤖 My name is Stacy!'
-  if (rawInput.includes('help')) return '💡 Just show your hand to the camera or use the mic to talk to me!'
+  // CORE WORDS & CONTROLS
+  if (sign === 'CONFIRM') return '✅ Confirmed! Thumbs up for yes.'
+  if (sign === 'CANCEL') return '❌ Cancelled. Thumbs down detected.'
+  if (sign === 'I LOVE YOU') return '🤟 I love you too! That is the universal sign for love.'
+  if (sign === 'YOU') return '👉 You! I am here to help you learn.'
+  if (sign === 'NO') return '🚫 No. Correct! (Index and Middle tapping thumb).'
 
-  return `💬 I understood: "${input}". Great sign! 🌟`
+  // Voice/Text Commands
+  if (rawInput.includes('hello') || rawInput.includes('hi')) return '👋 Hi there! I am Stacy. Show me some signs!'
+  if (rawInput.includes('thank')) return '😊 You are welcome! Happy to help!'
+  if (rawInput.includes('name')) return '🤖 My name is Stacy, your AI interpreter.'
+  if (rawInput.includes('help')) return '💡 Try A-Z or 0-9! I can also understand "I Love You" and "Thumbs Up".'
+
+  return `💬 Interpreted: "${input}". Excellent sign! 🌟`
 }
